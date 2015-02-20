@@ -14,7 +14,6 @@
         var esriJson = EJSON.parse(res.content);
         var geoJSON = convertData(esriJson);
 
-        console.log("response: " + geoJSON);
         callback(geoJSON);
 
       });

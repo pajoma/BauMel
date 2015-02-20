@@ -2,7 +2,6 @@ Features = new Mongo.Collection("features");
 
 
 
-
 if (Meteor.isClient) {
 
   Template.map.rendered = function() {
@@ -11,7 +10,7 @@ if (Meteor.isClient) {
     var map = BauMel.Maps.prepareMap();
 
     // get JSON from server
-    var year = new Date().valueOf() + 31556952000; 
+    var year = new Date().valueOf() + 31556952000;
     Meteor.call('loadFeatures', year, function(error, response) {
       // and load into map
       BauMel.Maps.showBaustellen(response);
@@ -43,7 +42,8 @@ if (Meteor.isClient) {
       Meteor.call('loadFeatures', new Date().valueOf() + 7776000000, function(error, response) {
         BauMel.Maps.showBaustellen(response);
       });
-    },  'click  .1year': function() {
+    },
+    'click  .1year': function() {
       Meteor.call('loadFeatures', new Date().valueOf() + 31556952000, function(error, response) {
         BauMel.Maps.showBaustellen(response);
       });
@@ -84,19 +84,33 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   Meteor.startup(function() {
 
-    Features._ensureIndex( { 'id': 1 });
+    Features._ensureIndex({
+      'id': 1
+    });
 
     // initially load data into database
     var loadFeaturesIntoDB = function(featureCollection) {
+      if(! featureCollection) return; 
+
+      console.log("Loading "+featureCollection.features.length+" features into database. ")
 
       featureCollection.features.forEach(function(feature) {
-        Features.insert({
-          id: feature.properties["OBJECTID"],
-          datumVon: feature.properties["DATUM_VON"],
-          datumBis: feature.properties["DATUM_BIS"],
-          feature: feature
-        });
+        var count = Features.find({
+          id: feature.properties["OBJECTID"]
+        }).count()
+        if (count === 0) {
+          Features.insert({
+            id: feature.properties["OBJECTID"],
+            datumVon: feature.properties["DATUM_VON"],
+            datumBis: feature.properties["DATUM_BIS"],
+            feature: feature
+          });
+          console.log("New Feature: "+feature.properties["NAME"]); 
+        }
+
+
       });
+      console.log("Database update complete.")
     }
 
     var baustellen = loadDataInto(loadFeaturesIntoDB);
@@ -112,7 +126,7 @@ if (Meteor.isServer) {
           datumVon: {
             $gte: new Date().valueOf() - 604800000
           }
-          }, {
+        }, {
           datumBis: {
             $lte: dateTo
           }
