@@ -1,4 +1,4 @@
-Features = new Mongo.Collection("features");
+
 
 
 
@@ -25,130 +25,20 @@ if (Meteor.isClient) {
 
   });
 
-
-
-  Template.menu.events({
-    'click .7days': function() {
-      Meteor.call('loadFeatures', new Date().valueOf() + 604800000, function(error, response) {
-        BauMel.Maps.showBaustellen(response);
-      });
-    },
-    'click  .30days': function() {
-      Meteor.call('loadFeatures', new Date().valueOf() + 2592000000, function(error, response) {
-        BauMel.Maps.showBaustellen(response);
-      });
-    },
-    'click  .3months': function() {
-      Meteor.call('loadFeatures', new Date().valueOf() + 7776000000, function(error, response) {
-        BauMel.Maps.showBaustellen(response);
-      });
-    },
-    'click  .1year': function() {
-      Meteor.call('loadFeatures', new Date().valueOf() + 31556952000, function(error, response) {
-        BauMel.Maps.showBaustellen(response);
-      });
-    },
-    'click  .dialog-about': function() {
-      var msg = "Der Baustellen-Melder für Köln zeigt ihnen die in der nächsten Zeit geplanten Baustellen im Stadtgebiet und zum Teil darüber hinaus."
-      var title = "Was ist der Baustellen-Melder?";
-      bootbox.dialog({
-        message: msg,
-        title: title,
-        buttons: {
-          success: {
-            label: "Toll",
-            className: "btn-success"
-          }
-        }
-      })
-    },
-    'click  .dialog-how': function() {
-      var msg = "Sie können sich über neue Baustellen benachrichtigen lassen. Diese Funktion ist derzeit noch nicht implementiert.";
-      var title = "Wie funktionieren Benachrichtungen?";
-      bootbox.dialog({
-        message: msg,
-        title: title,
-        buttons: {
-          success: {
-            label: "Alles klar",
-            className: "btn-success"
-          }
-        }
-      })
-    },
-  });
-
-
 }
+
+  
 
 if (Meteor.isServer) {
   Meteor.startup(function() {
-
-    Features._ensureIndex({
-      'id': 1
-    });
-
     // initially load data into database
-    var loadFeaturesIntoDB = function(featureCollection) {
-      if(! featureCollection) return; 
-
-      console.log("Loading "+featureCollection.features.length+" features into database. ")
-
-      featureCollection.features.forEach(function(feature) {
-        var count = Features.find({
-          id: feature.properties["OBJECTID"]
-        }).count()
-        if (count === 0) {
-          Features.insert({
-            id: feature.properties["OBJECTID"],
-            datumVon: feature.properties["DATUM_VON"],
-            datumBis: feature.properties["DATUM_BIS"],
-            feature: feature
-          });
-          console.log("New Feature: "+feature.properties["NAME"]); 
-        }
-
-
-      });
-      console.log("Database update complete.")
-    }
-
-    var baustellen = loadDataInto(loadFeaturesIntoDB);
-
+    var callback = BauMel.DAO.loadFeaturesIntoDB; 
+    var baustellen = loadDataInto(callback);
   });
-
-
 
   Meteor.methods({
     loadFeatures: function(dateTo) {
-      var cursor = Features.find({
-        $and: [{
-          datumVon: {
-            $gte: new Date().valueOf() - 604800000
-          }
-        }, {
-          datumBis: {
-            $lte: dateTo
-          }
-        }]
-      }, {
-        fields: {
-          datumVon: 0,
-          datumBis: 0,
-          id: 0,
-          _id: 0
-        }
-      });
-
-      var featureCollection = {
-        type: "FeatureCollection",
-        features: new Array()
-      };
-      cursor.forEach(function(post) {
-        featureCollection.features.push(post.feature)
-      });
-      return featureCollection;
+      return BauMel.DAO.findFeaturesByDate(new Date().valueOf(), dateTo); 
     }
-
   });
 }

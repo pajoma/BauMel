@@ -1,16 +1,16 @@
 BauMel.Maps = {
-	map: NaN,
-	clusterLayer: NaN,
+	/** @private */ map: NaN,
+
+	/** @private */ clusterLayer: NaN,
 
 	prepareMap: function() {
 
-		this.map = L.map('map', 
-			{
-				center: [50.936389, 6.952778], 
-				zoom: 13, 
-				maxZoom: 20
-
-			}); 
+		this.map = L.map('map', {
+			center: [50.936389, 6.952778],
+			zoom: 13,
+			maxZoom: 20,
+			// drawControl: true
+		});
 
 
 		L.tileLayer('http://openmapsurfer.uni-hd.de/tiles/roads/x={x}&y={y}&z={z}', {
@@ -18,6 +18,7 @@ BauMel.Maps = {
 			maxZoom: 20,
 			attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 		}).addTo(this.map);
+
 
 		return this.map;
 	},
@@ -39,22 +40,22 @@ BauMel.Maps = {
 
 	onEachFeature: function(feature, layer) {
 		if (feature.properties) {
-			var p = "",
-				dateVon = new Date(feature.properties["DATUM_VON"]).toLocaleDateString(),
-				dateBis = new Date(feature.properties["DATUM_BIS"]).toLocaleDateString(),
-				link = "http://www.stadt-koeln.de" + feature.properties["LINK"],
+			var p = '',
+				dateVon = new Date(feature.properties['DATUM_VON']).toLocaleDateString(),
+				dateBis = new Date(feature.properties['DATUM_BIS']).toLocaleDateString(),
+				link = 'http://www.stadt-koeln.de' + feature.properties['LINK'],
 				prop;
 
 
-			p += "<h4>" + feature.properties["NAME"] + "</h4>";
-			p += "<p>" + feature.properties["BESCHREIBUNG"] + "</p>";
+			p += '<h4>' + feature.properties['NAME'] + '</h4>';
+			p += '<p>' + feature.properties['BESCHREIBUNG'] + '</p>';
 			if (dateVon == dateBis) {
-				p += "<p> Am " + dateVon + "</p>";
+				p += '<p> Am ' + dateVon + '</p>';
 			} else {
-				p += "<p> Von " + dateVon + " bis " + dateBis + "</p>";
+				p += '<p> Von ' + dateVon + ' bis ' + dateBis + '</p>';
 			}
 
-			p += "<p><a href=\"" + link + "\">Link für weitere Informationen</a></p>"
+			p += '<p><a href="' + link + '">Link für weitere Informationen</a></p>'
 		}
 		layer.bindPopup(p);
 	},
@@ -68,8 +69,8 @@ BauMel.Maps = {
 
 		var geojsonMarkerOptions = {
 			radius: 8,
-			fillColor: "#ff7800",
-			color: "#000",
+			fillColor: '#ff7800',
+			color: '#000',
 			weight: 1,
 			opacity: 1,
 			fillOpacity: 0.8
@@ -91,10 +92,10 @@ BauMel.Maps = {
 			}
 		})
 
-		this.clusterLayer = new L.MarkerClusterGroup(); 
-		this.clusterLayer.addLayer(markerLayer); 
+		this.clusterLayer = new L.MarkerClusterGroup();
+		this.clusterLayer.addLayer(markerLayer);
 
-		this.map.addLayer(this.clusterLayer); 
+		this.map.addLayer(this.clusterLayer);
 
 
 		// zoom to 

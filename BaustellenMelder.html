@@ -5,6 +5,9 @@
 <body>
   {{> menu}}
   {{> map}}
+
+
+
 </body>
 
 <template name="menu">
@@ -29,7 +32,7 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Benachrichtungen <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <li ><a class="dialog-how" href="#">Wie geht's?</a></li>
-                <li class="disabled"><a href="#">Benachrichtung einrichten </a></li>
+                <li ><a class="dialog-subscribe" href="#">Benachrichtung einrichten </a></li>
                 <li class="disabled"><a href="#">Benachrichtung stornieren </a></li>
               
               </ul>
@@ -43,7 +46,6 @@
 			  <button type="button" class="7days btn btn-default navbar-btn ">7 Tage</button>
 			  <button type="button" class="30days btn btn-default navbar-btn">30 Tage</button>
 			  <button type="button" class="3months btn btn-default navbar-btn">3 Monate</button>
-        <button type="button" class="1year btn btn-default navbar-btn">1 Jahr</button>
         <button class="disabled btn navbar-btn  btn-info"> 
           <span class="loading-spin glyphicon glyphicon-globe"></span>  
         </button>
@@ -56,12 +58,5 @@
 </template>
 
 <template name="map">
-
-
-
       <div id="map" class="map"></div>
-
-  
 </template>
-
-
