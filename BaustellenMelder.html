@@ -4,59 +4,66 @@
 
 <body>
   {{> menu}}
+
+
   {{> map}}
+
+  <!-- <div id="container"> </div>-->
 
 
 
 </body>
 
-<template name="menu">
-  <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
+  <template name="menu">
+    <div class="navbar navbar-danger navbar-fixed-top baumel-navbar-shadow" role="navigation">
+      <div class="container-fluid">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-
-
-          <a class="navbar-brand" href="#">Verkehrsmeldungen Köln</a>
+          <a class="navbar-brand" href="javascript:void(0)">
+            <i class="mdi-image-edit"></i>
+            Verkehrsmeldungen Köln</a>
         </div>
-        <div id="navbar" class="collapse navbar-collapse">
+        <div class="navbar-collapse collapse navbar-inverse-collapse">
           <ul class="nav navbar-nav">
-        
-            
+<i class="mdi-image-edit"></i>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Benachrichtungen <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li ><a class="dialog-how" href="#">Wie geht's?</a></li>
-                <li ><a class="dialog-subscribe" href="#">Benachrichtung einrichten </a></li>
-                <li class="disabled"><a href="#">Benachrichtung stornieren </a></li>
-              
+              <a href="index.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
+                Benachrichtungen <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a class="dialog-how" href="javascript:void(0)">Erläuterung</a></li>
+                  <li><a class="dialog-subscribe" href="javascript:void(0)">Benachrichtung einrichten</a></li>
+                  <li><a class="disabled" href="javascript:void(0)">Benachrichtung stornieren</a></li>
+
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="index.html" data-target="#" class="dropdown-toggle" data-toggle="dropdown">
+                  Zeige Meldungen  ... <b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a class="7days" href="javascript:void(0)">der nächsten 7 Tage</a></li>
+                    <li><a class="30days" href="javascript:void(0)">des nächsten Monats</a></li>
+                    <li><a class="3months" href="javascript:void(0)">der nächsten 3 Monate</a></li>
+                    <li><a class="1year" href="javascript:void(0)">des nächsten Jahrs</a></li>
+                  </ul>
+                </li>
               </ul>
-             </li>
-              <li><a href="#" class="dialog-about">Über</a></li>
-          </ul>
+               <ul class="nav navbar-nav">
+                <li><a class="dialog-test" href="javascript:void(0)">Test</a></li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li><a class="dialog-about" href="javascript:void(0)">Über diese Seite</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    </template>
 
-          
-          <div class="btn-group navbar-right" role="group" aria-label="...">
-          	<p class="navbar-text">Zeige Meldungen der nächsten </p>
-			  <button type="button" class="7days btn btn-default navbar-btn ">7 Tage</button>
-			  <button type="button" class="30days btn btn-default navbar-btn">30 Tage</button>
-			  <button type="button" class="3months btn btn-default navbar-btn">3 Monate</button>
-        <button class="disabled btn navbar-btn  btn-info"> 
-          <span class="loading-spin glyphicon glyphicon-globe"></span>  
-        </button>
-        
-			</div>
-
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
-</template>
-
-<template name="map">
-      <div id="map" class="map"></div>
-</template>
+  <template name="map">
+  <div id="container">
+    <div id="map" class="map"></div>
+    </div>
+  </template>

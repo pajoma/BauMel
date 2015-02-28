@@ -1,13 +1,31 @@
 /* CSS declarations go here */
-  html, body { 
-        height:90%
-    }
-    #map {
-        margin: 4em auto;
-        height:90%;
-    } 
+html, body, #container {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
 
-    .glyphicon.spinning {
+body {
+    padding-top: 60px;
+}
+
+#map {
+  width: auto;
+  height: 100%;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.baumel-navbar-shadow {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .5); 
+}
+
+.controls-icon-appearence {
+    font-size: 16px;
+    background-color: #336699; 
+    color: #FFFFFF; 
+}
+
+.glyphicon.spinning {
     animation: spin 1s infinite linear;
     -webkit-animation: spin2 1s infinite linear;
 }

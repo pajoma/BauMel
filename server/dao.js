@@ -1,5 +1,5 @@
 BauMel.DAO = {
-	featuresDb: null, 
+		featuresDb: null, 
 	subscriptionsDb: null,
 
 	getFeaturesDB: function() {

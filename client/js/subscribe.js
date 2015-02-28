@@ -56,6 +56,7 @@ BauMel.Subscribe = {
 
 		this.addInfoControl(map);
 
+		
 
 		// disable controls
 		$('.7days').addClass('disabled');
@@ -65,17 +66,81 @@ BauMel.Subscribe = {
 	},
 	addRegion: function(layer) {
 		this.subscribedRegionsLayer.addLayer(layer);
-		
+
+	},
+	addSubscribeControl: function(map) {
+		L.Control.RemoveAll = L.Control.extend({
+			options: {
+				position: 'topleft',
+			},
+			onAdd: function(map) {
+				var containerDiv = L.DomUtil.create('div', 'leaflet-bar');
+
+				//var geocoderControl = L.DomUtil.create('div', 'leaflet-draw-toolbar', containerDiv);
+				var geocoderUI = L.DomUtil.create('a', 'disabled controls-icon-appearence mdi-maps-location-history', containerDiv);
+				geocoderUI.title = 'Adresse hinzufügen';
+				geocoderUI.href = '#';
+				L.DomEvent
+					.addListener(geocoderUI, 'click', L.DomEvent.stopPropagation)
+					.addListener(geocoderUI, 'click', L.DomEvent.preventDefault)
+					.addListener(geocoderUI, 'click', function() {
+						drawnItems.clearLayers();
+					});
+
+					// url('packages/bdunnette_leaflet-draw/images/spritesheet.png');
+
+				// var routingControl = L.DomUtil.create('div', 'leaflet-draw-toolbar', containerDiv);
+				var routingUI = L.DomUtil.create('a', 'disabled controls-icon-appearence  mdi-maps-directions', containerDiv);
+				routingUI.title = 'Route hinzufügen';
+				routingUI.href = '#';
+				L.DomEvent
+					.addListener(routingUI, 'click', L.DomEvent.stopPropagation)
+					.addListener(routingUI, 'click', L.DomEvent.preventDefault)
+					.addListener(routingUI, 'click', function() {
+						drawnItems.clearLayers();
+					});
+
+				var editUI = L.DomUtil.create('a', 'disabled controls-icon-appearence mdi-action-tab-unselected', containerDiv);
+				//	L.DomUtil.create('i', 'mdi-action-tab-unselected', editUI);
+
+				editUI.title = 'Regionen zeichnen';
+				editUI.href = '#';
+				L.DomEvent
+					.addListener(editUI, 'click', L.DomEvent.stopPropagation)
+					.addListener(editUI, 'click', L.DomEvent.preventDefault)
+					.addListener(editUI, 'click', function() {
+						drawnItems.clearLayers();
+					});
+
+
+				return containerDiv;
+			}
+		});
+		var removeAllControl = new L.Control.RemoveAll();
+		map.addControl(removeAllControl);
 	},
 
 	addInfoControl: function(map) {
 		this.infoControl = L.control();
+
+		/*L.Routing.control({
+			geocoder: L.Control.Geocoder.nominatim()
+		}).addTo(map);
+*/
+		L.Routing.control({
+			waypoints: [
+				L.latLng(50.74, 6.94),
+				L.latLng(52.5, 7.949)
+			]
+		}).addTo(map);
+
 
 		this.infoControl.onAdd = function(map) {
 			this._div = L.DomUtil.create('div', ''); // create a div with a class "info"
 			this.update();
 			return this._div;
 		};
+
 
 		// method that we will use to update the control based on feature properties passed
 		this.infoControl.update = function(props) {
@@ -139,6 +204,7 @@ BauMel.Subscribe = {
 
 	},
 
+	// deprecated
 	dialogEMail: function() {
 		var mail = '<h5>Bitte geben Sie ihre E-Mail-Adresse an: </h5>' +
 			'<div class="input-group">' +

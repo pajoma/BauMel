@@ -20,35 +20,16 @@ Template.menu.events({
     });
   },
   'click  .dialog-about': function() {
-    var msg = "Der Baustellen-Melder für Köln zeigt ihnen die in der nächsten Zeit geplanten Baustellen im Stadtgebiet und zum Teil darüber hinaus."
-    var title = "Was ist der Baustellen-Melder?";
-    bootbox.dialog({
-      message: msg,
-      title: title,
-      buttons: {
-        success: {
-          label: "Toll",
-          className: "btn-success"
-        }
-      }
-    })
+    Blaze.render(Template.dialogAbout, document.body);  
   },
   'click  .dialog-how': function() {
-    var msg = "Meldet die Stadt Köln neue Baustellen oder Ereignisse in dieser Region, können Sie sich per E-Mail rechtzeitig darüber informieren lassen. Dafür müssen  Sie über die Editierfunktion im nächsten Schritt eine Region auswählen, und im Anschluss eine E-Mail-Adresse eingeben. Es wird nur eine Benachrichtigung pro E-Mail-Adresse aktiviert, Sie können aber mehrere Regionen hinzufügen.";
-    var title = "Wie funktionieren Benachrichtungen?";
-    bootbox.dialog({
-      message: msg,
-      title: title,
-      buttons: {
-        success: {
-          label: "Alles klar",
-          className: "btn-success"
-        }
-      }
-    })
+    Blaze.render(Template.dialogHelp, document.body); 
   },
   'click  .dialog-subscribe': function() {
-    BauMel.Subscribe.dialogEMail();
+    Blaze.render(Template.dialogEmail, document.body);
+  },
+  'click  .dialog-test': function() {
+    BauMel.Subscribe.addTestControl(BauMel.Maps.getMap()); 
   },
 });
 
@@ -62,3 +43,10 @@ Template.map.events({
     },
   
 });
+
+
+
+
+
+
+

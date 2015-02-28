@@ -13,12 +13,15 @@ BauMel.Maps = {
 		});
 
 
-		L.tileLayer('http://openmapsurfer.uni-hd.de/tiles/roads/x={x}&y={y}&z={z}', {
+		L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpeg', {
 			minZoom: 0,
 			maxZoom: 20,
-			attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+			subdomains: '1234',
+			attribution: 'Imagery by <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> Contributors'
 		}).addTo(this.map);
 
+
+		BauMel.Subscribe.addTestControl(this.map); 
 
 		return this.map;
 	},
