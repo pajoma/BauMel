@@ -29,7 +29,7 @@ Template.menu.events({
     Blaze.render(Template.dialogEmail, document.body);
   },
   'click  .dialog-test': function() {
-    BauMel.Subscribe.addTestControl(BauMel.Maps.getMap()); 
+    BauMel.Subscribe.addSubscribeOptionsControl(); 
   },
 });
 

@@ -20,9 +20,6 @@ BauMel.Maps = {
 			attribution: 'Imagery by <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> Contributors'
 		}).addTo(this.map);
 
-
-		BauMel.Subscribe.addTestControl(this.map); 
-
 		return this.map;
 	},
 

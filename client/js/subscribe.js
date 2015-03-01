@@ -5,6 +5,8 @@ BauMel.Subscribe = {
 	/** @type {[L.Control.Draw]}  Toolbar for editing mode. */
 	editControls: null,
 
+	subscribeOptionsControl: null,
+
 	infoControl: null,
 
 	email: null,
@@ -56,7 +58,7 @@ BauMel.Subscribe = {
 
 		this.addInfoControl(map);
 
-		
+
 
 		// disable controls
 		$('.7days').addClass('disabled');
@@ -68,16 +70,43 @@ BauMel.Subscribe = {
 		this.subscribedRegionsLayer.addLayer(layer);
 
 	},
-	addSubscribeControl: function(map) {
-		L.Control.RemoveAll = L.Control.extend({
+
+	addSubscribeOptionsControl: function() {
+		var map = BauMel.Maps.getMap();
+
+		/* Layer für die gemalten Regeionen */
+		this.subscribedRegionsLayer = new L.FeatureGroup();
+		map.addLayer(this.subscribedRegionsLayer);
+
+
+
+		L.Control.EditSubscription = L.Control.Draw.extend({
 			options: {
 				position: 'topleft',
+				draw: {
+					polyline: true,
+					polygon: false,
+					circle: false,
+					rectangle: {
+						shapeOptions: {
+							// required for deletion
+							clickable: true
+						}
+					},
+					marker: false
+				},
+				edit: {
+					featureGroup: this.subscribedRegionsLayer, //REQUIRED!!
+					remove: true
+				}
 			},
 			onAdd: function(map) {
+				this.onAdd(map); 
+				
 				var containerDiv = L.DomUtil.create('div', 'leaflet-bar');
 
 				//var geocoderControl = L.DomUtil.create('div', 'leaflet-draw-toolbar', containerDiv);
-				var geocoderUI = L.DomUtil.create('a', 'disabled controls-icon-appearence mdi-maps-location-history', containerDiv);
+				var geocoderUI = L.DomUtil.create('a', 'disabled controls-icon-appearence mdi-image-filter-tilt-shift', containerDiv);
 				geocoderUI.title = 'Adresse hinzufügen';
 				geocoderUI.href = '#';
 				L.DomEvent
@@ -87,10 +116,10 @@ BauMel.Subscribe = {
 						drawnItems.clearLayers();
 					});
 
-					// url('packages/bdunnette_leaflet-draw/images/spritesheet.png');
+				// url('packages/bdunnette_leaflet-draw/images/spritesheet.png');
 
 				// var routingControl = L.DomUtil.create('div', 'leaflet-draw-toolbar', containerDiv);
-				var routingUI = L.DomUtil.create('a', 'disabled controls-icon-appearence  mdi-maps-directions', containerDiv);
+				var routingUI = L.DomUtil.create('a', 'disabled controls-icon-appearence  mdi-notification-time-to-leave', containerDiv);
 				routingUI.title = 'Route hinzufügen';
 				routingUI.href = '#';
 				L.DomEvent
@@ -116,8 +145,65 @@ BauMel.Subscribe = {
 				return containerDiv;
 			}
 		});
-		var removeAllControl = new L.Control.RemoveAll();
-		map.addControl(removeAllControl);
+
+
+		var test = new L.Control.EditSubscription();
+		map.addControl(test);
+
+		L.Control.SubscribeOptions = L.Control.extend({
+			options: {
+				position: 'topleft',
+			},
+			onAdd: function(map) {
+				var containerDiv = L.DomUtil.create('div', 'leaflet-bar');
+
+				//var geocoderControl = L.DomUtil.create('div', 'leaflet-draw-toolbar', containerDiv);
+				var geocoderUI = L.DomUtil.create('a', 'disabled controls-icon-appearence mdi-image-filter-tilt-shift', containerDiv);
+				geocoderUI.title = 'Adresse hinzufügen';
+				geocoderUI.href = '#';
+				L.DomEvent
+					.addListener(geocoderUI, 'click', L.DomEvent.stopPropagation)
+					.addListener(geocoderUI, 'click', L.DomEvent.preventDefault)
+					.addListener(geocoderUI, 'click', function() {
+						drawnItems.clearLayers();
+					});
+
+				// url('packages/bdunnette_leaflet-draw/images/spritesheet.png');
+
+				// var routingControl = L.DomUtil.create('div', 'leaflet-draw-toolbar', containerDiv);
+				var routingUI = L.DomUtil.create('a', 'disabled controls-icon-appearence  mdi-notification-time-to-leave', containerDiv);
+				routingUI.title = 'Route hinzufügen';
+				routingUI.href = '#';
+				L.DomEvent
+					.addListener(routingUI, 'click', L.DomEvent.stopPropagation)
+					.addListener(routingUI, 'click', L.DomEvent.preventDefault)
+					.addListener(routingUI, 'click', function() {
+						drawnItems.clearLayers();
+					});
+
+				var editUI = L.DomUtil.create('a', 'disabled controls-icon-appearence mdi-action-tab-unselected', containerDiv);
+				//	L.DomUtil.create('i', 'mdi-action-tab-unselected', editUI);
+
+				editUI.title = 'Regionen zeichnen';
+				editUI.href = '#';
+				L.DomEvent
+					.addListener(editUI, 'click', L.DomEvent.stopPropagation)
+					.addListener(editUI, 'click', L.DomEvent.preventDefault)
+					.addListener(editUI, 'click', function() {
+						drawnItems.clearLayers();
+					});
+
+
+				return containerDiv;
+			}
+		});
+
+
+
+		// this.subscribeOptionsControl = new L.Control.SubscribeOptions();
+		// map.addControl(this.subscribeOptionsControl);
+
+
 	},
 
 	addInfoControl: function(map) {

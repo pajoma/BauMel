@@ -3,14 +3,17 @@ Template.dialogEmail.rendered = function() {
 };
 
 Template.dialogEmail.events({
-	'click  .close': function() {
+	'click  .close': function(event, template) {
+		template.$('.modal').modal('hide');
 		Blaze.remove(Blaze.currentView);
 	},
-	'click  .btn-ok': function() {
-		BauMel.Subscribe.enableEditMode();
+	'click  .btn-ok': function(event, template) {
+		BauMel.Subscribe.addSubscribeOptionsControl();
+		template.$('.modal').modal('hide');
 		Blaze.remove(Blaze.currentView);
 	},
-	'click  .btn-cancel': function() {
+	'click  .btn-cancel': function(event, template) {
+		template.$('.modal').modal('hide');
 		Blaze.remove(Blaze.currentView);
 	}
 });
