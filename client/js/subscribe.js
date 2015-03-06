@@ -7,11 +7,12 @@ BauMel.Subscribe = {
 
 	subscribeOptionsControl: null,
 
+	/** @type String Existing code, used to edit or delete a subscription */
+	subscriptionCode: null, 
+
 	infoControl: null,
 
 	email: null,
-
-	code: null,
 
 	/**
 	 * Activates the toolbar too draw rectangles on the map, with each rectangle being a region the user
@@ -71,84 +72,25 @@ BauMel.Subscribe = {
 
 	},
 
+	addAddressCoordinates: function(addressCoordinates) {
+
+		// we draw a circle, in the database we store the coordinate 
+
+		var circle = L.circle(addressCoordinates, 600);
+		circle.editing.enable();
+
+		this.subscribedRegionsLayer.addLayer(circle); 
+
+		BauMel.Maps.getMap().fireEvent('draw:created', circle); 
+	},
+
 	addSubscribeOptionsControl: function() {
 		var map = BauMel.Maps.getMap();
 
-		/* Layer für die gemalten Regeionen */
+		/* Layer für die gemalten Regionen */
 		this.subscribedRegionsLayer = new L.FeatureGroup();
 		map.addLayer(this.subscribedRegionsLayer);
 
-
-
-		L.Control.EditSubscription = L.Control.Draw.extend({
-			options: {
-				position: 'topleft',
-				draw: {
-					polyline: true,
-					polygon: false,
-					circle: false,
-					rectangle: {
-						shapeOptions: {
-							// required for deletion
-							clickable: true
-						}
-					},
-					marker: false
-				},
-				edit: {
-					featureGroup: this.subscribedRegionsLayer, //REQUIRED!!
-					remove: true
-				}
-			},
-			onAdd: function(map) {
-				this.onAdd(map); 
-				
-				var containerDiv = L.DomUtil.create('div', 'leaflet-bar');
-
-				//var geocoderControl = L.DomUtil.create('div', 'leaflet-draw-toolbar', containerDiv);
-				var geocoderUI = L.DomUtil.create('a', 'disabled controls-icon-appearence mdi-image-filter-tilt-shift', containerDiv);
-				geocoderUI.title = 'Adresse hinzufügen';
-				geocoderUI.href = '#';
-				L.DomEvent
-					.addListener(geocoderUI, 'click', L.DomEvent.stopPropagation)
-					.addListener(geocoderUI, 'click', L.DomEvent.preventDefault)
-					.addListener(geocoderUI, 'click', function() {
-						drawnItems.clearLayers();
-					});
-
-				// url('packages/bdunnette_leaflet-draw/images/spritesheet.png');
-
-				// var routingControl = L.DomUtil.create('div', 'leaflet-draw-toolbar', containerDiv);
-				var routingUI = L.DomUtil.create('a', 'disabled controls-icon-appearence  mdi-notification-time-to-leave', containerDiv);
-				routingUI.title = 'Route hinzufügen';
-				routingUI.href = '#';
-				L.DomEvent
-					.addListener(routingUI, 'click', L.DomEvent.stopPropagation)
-					.addListener(routingUI, 'click', L.DomEvent.preventDefault)
-					.addListener(routingUI, 'click', function() {
-						drawnItems.clearLayers();
-					});
-
-				var editUI = L.DomUtil.create('a', 'disabled controls-icon-appearence mdi-action-tab-unselected', containerDiv);
-				//	L.DomUtil.create('i', 'mdi-action-tab-unselected', editUI);
-
-				editUI.title = 'Regionen zeichnen';
-				editUI.href = '#';
-				L.DomEvent
-					.addListener(editUI, 'click', L.DomEvent.stopPropagation)
-					.addListener(editUI, 'click', L.DomEvent.preventDefault)
-					.addListener(editUI, 'click', function() {
-						drawnItems.clearLayers();
-					});
-
-
-				return containerDiv;
-			}
-		});
-
-
-		var test = new L.Control.EditSubscription();
-		map.addControl(test);
 
 		L.Control.SubscribeOptions = L.Control.extend({
 			options: {
@@ -165,7 +107,7 @@ BauMel.Subscribe = {
 					.addListener(geocoderUI, 'click', L.DomEvent.stopPropagation)
 					.addListener(geocoderUI, 'click', L.DomEvent.preventDefault)
 					.addListener(geocoderUI, 'click', function() {
-						drawnItems.clearLayers();
+						BauMel.Geocoder.showDialog(); 
 					});
 
 				// url('packages/bdunnette_leaflet-draw/images/spritesheet.png');
@@ -181,6 +123,7 @@ BauMel.Subscribe = {
 						drawnItems.clearLayers();
 					});
 
+				/*
 				var editUI = L.DomUtil.create('a', 'disabled controls-icon-appearence mdi-action-tab-unselected', containerDiv);
 				//	L.DomUtil.create('i', 'mdi-action-tab-unselected', editUI);
 
@@ -192,18 +135,105 @@ BauMel.Subscribe = {
 					.addListener(editUI, 'click', function() {
 						drawnItems.clearLayers();
 					});
-
+				*/
 
 				return containerDiv;
 			}
 		});
 
 
+		this.subscribeOptionsControl = new L.Control.SubscribeOptions();
+		map.addControl(this.subscribeOptionsControl);
 
-		// this.subscribeOptionsControl = new L.Control.SubscribeOptions();
-		// map.addControl(this.subscribeOptionsControl);
+		var options = {
+			draw: {
+				polyline: false,
+				polygon: false,
+				circle: true,
+				rectangle: {
+					shapeOptions: {
+						// required for deletion
+						clickable: true
+					}
+				},
+				marker: false
+			},
+			edit: {
+				featureGroup: this.subscribedRegionsLayer, //REQUIRED!!
+				remove: true
+			}
+		};
 
 
+		map.on('draw:created', function(e) {
+			if (e.layerType === 'rectangle') {
+				// Do marker specific actions
+				$('.ok-region').removeClass('disabled');
+			} else 	if (e.layerType === 'circle') {
+				// Do marker specific actions
+				$('.ok-region').removeClass('disabled');
+			}
+
+			// Do whatever else you need to. (save to db, add to map etc)
+			BauMel.Subscribe.addRegion(e.layer);
+		});
+		this.editControls = new L.Control.Draw(options);
+		map.addControl(this.editControls);
+
+
+
+		/*
+		L.Control.EditSubscription = L.Control.Draw.extend({
+			options: drawOptions,
+			onAdd: function(map) {
+				// this.onAdd(map); 
+				
+				var containerDiv = L.DomUtil.create('div', 'leaflet-bar');
+
+				//var geocoderControl = L.DomUtil.create('div', 'leaflet-draw-toolbar', containerDiv);
+				var geocoderUI = L.DomUtil.create('a', 'disabled controls-icon-appearence mdi-image-filter-tilt-shift', containerDiv);
+				geocoderUI.title = 'Adresse hinzufügen';
+				geocoderUI.href = '#';
+				L.DomEvent
+					.addListener(geocoderUI, 'click', L.DomEvent.stopPropagation)
+					.addListener(geocoderUI, 'click', L.DomEvent.preventDefault)
+					.addListener(geocoderUI, 'click', function() {
+						console.log("Opening dialog add address"); 
+					});
+
+				// url('packages/bdunnette_leaflet-draw/images/spritesheet.png');
+
+				// var routingControl = L.DomUtil.create('div', 'leaflet-draw-toolbar', containerDiv);
+				var routingUI = L.DomUtil.create('a', 'disabled controls-icon-appearence  mdi-notification-time-to-leave', containerDiv);
+				routingUI.title = 'Route hinzufügen';
+				routingUI.href = '#';
+				L.DomEvent
+					.addListener(routingUI, 'click', L.DomEvent.stopPropagation)
+					.addListener(routingUI, 'click', L.DomEvent.preventDefault)
+					.addListener(routingUI, 'click', function() {
+						console.log("disabled"); 
+
+					});
+
+				var editUI = L.DomUtil.create('a', 'disabled controls-icon-appearence mdi-action-tab-unselected', containerDiv);
+				editUI.title = 'Regionen zeichnen';
+				editUI.href = '#';
+				L.DomEvent
+					.addListener(editUI, 'click', L.DomEvent.stopPropagation)
+					.addListener(editUI, 'click', L.DomEvent.preventDefault)
+					.addListener(editUI, 'click', function() {
+
+					});
+
+
+				 return containerDiv;
+			}
+		}); */
+
+
+
+
+		
 	},
 
 	addInfoControl: function(map) {
@@ -285,22 +315,29 @@ BauMel.Subscribe = {
 
 	},
 	subscribe: function() {
-
+		// this is finally used to subscribe the current user, 
+		// get User Collection 
 
 
 	},
+	setSubscriptionCode: function(code) {
+		this.subscriptionCode = code; 
+	}, 
+	setEMail: function(email) {
+		this.email = email; 
+	}, 
 
 	// deprecated
 	dialogEMail: function() {
 		var mail = '<h5>Bitte geben Sie ihre E-Mail-Adresse an: </h5>' +
 			'<div class="input-group">' +
 			'<span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></span>' +
-			'<input type="text" id="email" class="form-control" placeholder="E-Mail" aria-describedby="basic-addon1">' +
+			'<input type="text" id="email" class="valEmail form-control" placeholder="E-Mail" aria-describedby="basic-addon1">' +
 			'</div>';
 		var code = '<h5>Falls Sie einen Code zur Hand haben, können Sie eine bestehende Benachrichtigung editieren: </h5>' +
 			'<div class="input-group">' +
 			'<span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-certificate" aria-hidden="true"></span></span>' +
-			'<input type="text" id="code" class="form-control" placeholder="Code" aria-describedby="basic-addon1">' +
+			'<input type="text" id="code" class="valCode form-control" placeholder="Code" aria-describedby="basic-addon1">' +
 			'</div>';
 		var msg = mail + code;
 
@@ -321,8 +358,8 @@ BauMel.Subscribe = {
 					callback: function() {
 						// TODO: validate email
 
-						this.code = $('#code').val();
-						this.email = $('#email').val();
+						this.code = $('.valCode').val();
+						this.email = $('.valEmail').val();
 
 						BauMel.Subscribe.enableEditMode();
 					}

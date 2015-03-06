@@ -7,8 +7,9 @@
 meteor-platform
 autopublish
 insecure
-fuatsengul:leaflet
 http
-mizzao:bootstrap-3
-mizzao:bootboxjs
+fuatsengul:leaflet
 fuatsengul:leaflet-markercluster
+fuatsengul:leaflet-routing-machine
+bdunnette:leaflet-draw
+fezvrasta:bootstrap-material-design

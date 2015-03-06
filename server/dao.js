@@ -1,13 +1,7 @@
-BauMel.DAO = {
-		featuresDb: null, 
-	subscriptionsDb: null,
+BauMel.DAO = {};  
 
-	getFeaturesDB: function() {
-		if(!this.featuresDb) {
-			this.featuresDb = new Mongo.Collection("features"); 
-		}
-		return this.featuresDb; 
-	}, 
+BauMel.DAO.Subscriptions = {
+	subscriptionsDb: null,
 	getSubscriptionsDB: function() {
 		if(!this.subscriptionsDb) {
 			this.subscriptionsDb = new Mongo.Collection("subscriptions"); 
@@ -15,17 +9,58 @@ BauMel.DAO = {
 		return this.subscriptionsDb; 
 	},
 
+	/*
+		{
+			email: "hubertus@sturmius.de". 
+			code: "sr3s23", 
+			subscribedRegion: {
+				type: "FeatureCollection", 
+				geometries: [
+				
+				]
+			}
+
+		}
+		
+
+	*/
+
+	insertSubscription: function() {
+
+	}, 
+
+	getSubscription: function(email) {
+
+	}, 
+
+	validateCode: function(email, code) {
+
+	}
+}
+
+BauMel.DAO.Features = {
+		featuresDb: null, 
+	
+
+	getFeaturesDB: function() {
+		if(!this.featuresDb) {
+			this.featuresDb = new Mongo.Collection("features"); 
+		}
+		return this.featuresDb; 
+	}, 
+	
+
 	loadFeaturesIntoDB: function(featureCollection) {
 		if (!featureCollection) return;
 
 		console.log("Loading " + featureCollection.features.length + " features into database. ")
 
 		featureCollection.features.forEach(function(feature) {
-			var count = BauMel.DAO.getFeaturesDB().find({
+			var count = BauMel.DAO.Features.getFeaturesDB().find({
 				id: feature.properties["OBJECTID"]
 			}).count()
 			if (count === 0) {
-				BauMel.DAO.getFeaturesDB().insert({
+				BauMel.DAO.Features.getFeaturesDB().insert({
 					id: feature.properties["OBJECTID"],
 					datumVon: feature.properties["DATUM_VON"],
 					datumBis: feature.properties["DATUM_BIS"],
@@ -41,7 +76,7 @@ BauMel.DAO = {
 	findFeaturesByDate: function(dateFrom, dateTo) {
 
 		console.log("New request until "+new Date(dateTo).toDateString()); 
-		var cursor = BauMel.DAO.getFeaturesDB().find({
+		var cursor = BauMel.DAO.Features.getFeaturesDB().find({
 			$and: [{
 				datumVon: {
 					$gte: dateFrom

@@ -20,7 +20,9 @@ Template.menu.events({
     });
   },
   'click  .dialog-about': function() {
+    console.log("test"); 
     Blaze.render(Template.dialogAbout, document.body);  
+    console.log("test"); 
   },
   'click  .dialog-how': function() {
     Blaze.render(Template.dialogHelp, document.body); 

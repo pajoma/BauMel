@@ -1,0 +1,37 @@
+<template name="dialogGeocodeAddress">
+	<div class="modal fade" id="layer-dialog-geocode" data-backdrop="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h4 class="modal-title">Adresse eingeben</h4>
+				</div>
+				<div class="modal-body">
+
+
+
+					<p>
+						<form name="address">
+						<h5>Bitte geben sie ihre Straße und Hausnummer in Köln an.  </h5>
+						<div class="input-group">
+							<input type="text" id="street" class="valStreet form-control" placeholder="Straße" aria-describedby="basic-addon1"> 
+							<input type="text" id="nr" class="valNumber form-control" placeholder="Hausnummer" aria-describedby="basic-addon1"> 
+						</div>
+						</form>
+					</p>
+				</div>
+                <!--
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Danke</button>
+                </div>
+            -->
+
+            <div class="modal-footer">
+            	<button type="button" class="btn btn-address-cancel btn-default" data-dismiss="modal"><span style="color: rgba(0,0,0,.84)">Abbrechen</span></button> 
+            	<button type="button" class="btn btn-address-ok btn-primary">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+</template>

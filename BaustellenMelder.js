@@ -32,13 +32,22 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   Meteor.startup(function() {
     // initially load data into database
-    var callback = BauMel.DAO.loadFeaturesIntoDB; 
+    var callback = BauMel.DAO.Features.loadFeaturesIntoDB; 
     var baustellen = loadDataInto(callback);
   });
 
   Meteor.methods({
     loadFeatures: function(dateTo) {
-      return BauMel.DAO.findFeaturesByDate(new Date().valueOf(), dateTo); 
+      return BauMel.DAO.Features.findFeaturesByDate(new Date().valueOf(), dateTo); 
+    }, 
+    geocodeAddress: function(data) {
+      console.log("New Geocoding request for "+data.street+" "+data.number); 
+
+      return {
+        result: [50.922389, 6.955778]
+      }; 
+
+
     }
   });
 }
